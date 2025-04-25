@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { Router } from 'itty-router'
 import Cookies from 'cookie'
 import jwt from '@tsndr/cloudflare-worker-jwt'
-import { queryNote, MD5, checkAuth, genRandomStr, returnPage, returnJSON, saltPw, getI18n } from './helper'
+import { randomStr, returnPage, returnJSON, saltPw, getI18n } from './helper'
 import { SECRET } from './constant'
 import { saltPw } from './helper'
 
@@ -10,8 +10,8 @@ import { saltPw } from './helper'
 const router = Router()
 
 // 全局认证中间件
-router.all('*', async (request, env) => {
-  const url = new URL(request.url)
+router.all('*', async (请求, env) => {
+  const url = new 网站(请求.url)
   
   // 排除分享路由和管理登录接口
   if(url.pathname.startsWith('/share') || url.pathname === '/admin/login') {
@@ -19,7 +19,7 @@ router.all('*', async (request, env) => {
   }
 
   // 验证管理员Cookie
-  const cookie = Cookies.parse(request.headers.get('Cookie') || '')
+  const cookie = Cookies.parse(请求.headers.get('Cookie') || '')
   const validAdmin = await checkAdminAuth(cookie)
   
   if(!validAdmin) {
@@ -33,9 +33,9 @@ router.get('/', ({ url }) => {
     return Response.redirect(`${url}${newHash}`, 302)
 })
 
-router.get('/share/:md5', async (request) => {
-    const lang = getI18n(request)
-    const { md5 } = request.params
+router.get('/share/:md5', async (请求) => {
+    const lang = getI18n(请求)
+    const { md5 } = 请求.params
     const path = await SHARE.get(md5)
 
     if (!!path) {
@@ -52,13 +52,13 @@ router.get('/share/:md5', async (request) => {
     return returnPage('Page404', { lang, title: '404' })
 })
 
-router.get('/:path', async (request) => {
-    const lang = getI18n(request)
+router.get('/:path', async (请求) => {
+    const lang = getI18n(请求)
 
-    const { path } = request.params
+    const { path } = 请求.params
     const title = decodeURIComponent(path)
 
-    const cookie = Cookies.parse(request.headers.get('Cookie') || '')
+    const cookie = Cookies.parse(请求.headers.get('Cookie') || '')
 
     const { value, metadata } = await queryNote(path)
 
